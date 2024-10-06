@@ -1,16 +1,11 @@
 import streamlit as st
-from analyzer.visualize import (
-    plot_protocol_distribution,
-    plot_packet_size_distribution,
-    plot_packet_frequency_over_time,
-    plot_top_ip_addresses
-)
+from scapy.all import get_if_list
 
 
 def setup_ui():
     # Set the tab name and any global UI configuration
-    st.set_page_config(page_title="Network Traffic Analyzer")
-'''
+    st.set_page_config(page_title="Network Traffic Analyzer",layout="wide")
+    
     # Configure the layout structure here, such as sidebars, containers, etc.
     with st.sidebar:
         st.title("Controls")
@@ -23,15 +18,15 @@ def setup_ui():
 
         # Analytics Section
         st.subheader("Analytics")
-        analytics_buttons = {
-            "Show Protocol Distribution": plot_protocol_distribution,
-            "Show Packet Size Distribution": plot_packet_size_distribution,
-            "Show Packet Frequency Over Time": plot_packet_frequency_over_time,
-            "Show Top IP Addresses": plot_top_ip_addresses,
-        }
+        analytics_options = st.selectbox("Select Analytics:", [
+        "Protocol Distribution",
+        "Packet Size Distribution",
+        "Packet Frequency Over Time",
+        "Top IP Addresses",   
+    ])
+    
+    st.session_state.selected_analytics = analytics_options
+    
 
-        for label, func in analytics_buttons.items():
-            if st.button(label):
-                func()
 
-    return selected_interface, start_button, stop_button'''
+    return selected_interface, start_button, stop_button
