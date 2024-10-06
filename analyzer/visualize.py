@@ -1,57 +1,116 @@
 #use pandas and matplotlib to visualize the data and trends found
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import streamlit as st
 
-def plot_protocol_distribution(filename='data/captured_packets.csv'):
-    """Visualize the distribution of network protocols (TCP, UDP, etc.)."""
-    df = pd.read_csv(filename)
-    protocol_counts = df['protocol'].value_counts()
+def plot_protocol_distribution():
+    csv_file_path = 'data/captured_packets.csv'
 
-    protocol_counts.plot(kind='bar', color='skyblue')
-    plt.title('Protocol Distribution')
-    plt.xlabel('Protocol')
-    plt.ylabel('Packet Count')
-    plt.show()
+    if not st.session_state.capturing and csv_file_path and os.path.exists(csv_file_path):
+        df = pd.read_csv(csv_file_path)
+        
+        if not df.empty:
+            protocol_counts = df['protocol'].value_counts()
 
-def plot_packet_size_distribution(filename='data/captured_packets.csv'):
-    """Visualize the distribution of packet sizes."""
-    df = pd.read_csv(filename)
-    
-    # Plot a histogram of packet sizes
-    df['packet_size'].plot(kind='hist', bins=20, color='purple', alpha=0.7)
-    plt.title('Packet Size Distribution')
-    plt.xlabel('Packet Size (Bytes)')
-    plt.ylabel('Frequency')
-    plt.show()
+            # Create the plot
+            fig, ax = plt.subplots()
+            protocol_counts.plot(kind='bar', ax=ax)
+            ax.set_title('Protocol Distribution')
+            ax.set_xlabel('Protocol')
+            ax.set_ylabel('Count')
 
-def plot_packet_frequency_over_time(filename='data/captured_packets.csv'):
-    """Visualize the number of packets captured over time."""
-    df = pd.read_csv(filename)
+            # Display the plot
+            st.pyplot(fig)
+        else:
+            st.write("No data available to plot.")
+    else:
+        st.write("Capture has not stopped or file does not exist.")
 
-    # Convert the timestamp column to datetime
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
+def plot_packet_size_distribution():
+    csv_file_path = 'data/captured_packets.csv'
 
-    # Group by minute or second for packet frequency analysis
-    packet_frequency = df.groupby(pd.Grouper(key='timestamp', freq='1Min')).size()
+    if not st.session_state.capturing and csv_file_path and os.path.exists(csv_file_path):
+        df = pd.read_csv(csv_file_path)
 
-    packet_frequency.plot(kind='line', color='green')
-    plt.title('Packet Frequency Over Time')
-    plt.xlabel('Time (minutes)')
-    plt.ylabel('Number of Packets')
-    plt.show()
+        if not df.empty:
+            fig, ax = plt.subplots()
+            df['packet_size'].plot(kind='hist', bins=30, ax=ax)
+            ax.set_title('Packet Size Distribution')
+            ax.set_xlabel('Packet Size')
+            ax.set_ylabel('Frequency')
 
-def plot_top_ip_addresses(filename='data/captured_packets.csv', top_n=10):
-    """Visualize the top N source IP addresses."""
-    df = pd.read_csv(filename)
+            st.pyplot(fig)
+        else:
+            st.write("No data available to plot.")
+    else:
+        st.write("Capture has not stopped or file does not exist.")
 
-    # Count occurrences of source IP addresses
-    src_ip_counts = df['src_ip'].value_counts().head(top_n)
+def plot_packet_frequency_over_time():
+    csv_file_path = 'data/captured_packets.csv'
 
-    src_ip_counts.plot(kind='bar', color='orange')
-    plt.title(f'Top {top_n} Source IP Addresses')
-    plt.xlabel('Source IP')
-    plt.ylabel('Packet Count')
-    plt.show()
+    if not st.session_state.capturing and csv_file_path and os.path.exists(csv_file_path):
+        df = pd.read_csv(csv_file_path)
+
+        if not df.empty:
+            # Convert the 'timestamp' column to datetime
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+            # Calculate the total capture duration
+            capture_duration = (df['timestamp'].max() - df['timestamp'].min()).total_seconds()
+
+            # Determine the grouping frequency based on capture duration
+            if capture_duration < 60:
+                freq = 'S'  # Seconds if duration is less than a minute
+                xlabel = 'Time (Seconds)'
+            elif capture_duration < 3600:
+                freq = 'T'  # Minutes if duration is less than an hour
+                xlabel = 'Time (Minutes)'
+            elif capture_duration < 216000:
+                freq = 'H'  # Hours for longer durations
+                xlabel = 'Time (Hours)'
+
+            # Group by the selected frequency and count occurrences (frequency)
+            packet_counts = df.groupby(pd.Grouper(key='timestamp', freq=freq)).size()
+
+            # Create the plot
+            fig, ax = plt.subplots()
+            packet_counts.plot(ax=ax)
+
+            ax.set_title('Packet Frequency Over Time')
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel('Number of Packets')
+
+            # Display the plot
+            st.pyplot(fig)
+        else:
+            st.write("No data available to plot.")
+    else:
+        st.write("Capture has not stopped or file does not exist.")
+
+def plot_top_ip_addresses():
+    csv_file_path = 'data/captured_packets.csv'
+
+    if not st.session_state.capturing and csv_file_path and os.path.exists(csv_file_path):
+        df = pd.read_csv(csv_file_path)
+
+        if not df.empty:
+            # Combine source and destination IPs to get overall frequency
+            ip_counts = pd.concat([df['src_ip'], df['dst_ip']]).value_counts().head(10)
+
+            # Create the plot
+            fig, ax = plt.subplots()
+            ip_counts.plot(kind='barh', ax=ax)  # Horizontal bar plot for better readability
+            ax.set_title('Top IP Addresses')
+            ax.set_xlabel('Frequency')
+            ax.set_ylabel('IP Address')
+
+            # Display the plot
+            st.pyplot(fig)
+        else:
+            st.write("No data available to plot.")
+    else:
+        st.write("Capture has not stopped or file does not exist.")
 
 if __name__ == "__main__":
     # Call each function to visualize
