@@ -2,7 +2,6 @@ import streamlit as st
 from analyzer.capture import capture  # Your existing capture function
 from analyzer.store import save_to_csv  # For saving packet data
 from analyzer.visualize import *  # Import visualization methods
-from analyzer.process import *  # Import processing and statistical methods
 import threading
 from scapy.all import get_if_list
 
@@ -51,6 +50,7 @@ if st.sidebar.checkbox("Packet Frequency Over Time"):
 if st.sidebar.checkbox("Top Source IP Addresses"):
     st.subheader("Top Source IP Addresses")
     plot_top_ip_addresses()
+
 
 
 

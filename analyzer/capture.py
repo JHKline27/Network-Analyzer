@@ -22,9 +22,9 @@ def clear_csv_file(filename='data/captured_packets.csv'):
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([
-            'src_ip', 'dst_ip', 'protocol', 'timestamp', 'delta_time',
-            'ttl', 'ip_header_length', 'total_length', 'src_port', 'dst_port', 'packet_size'
-        ])  # Write the header row at the start of the file
+        'Source IP', 'Destination IP', 'Protocol', 'Timestamp', 'Delta Time',
+        'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
+    ])  # Write the header row at the start of the file
 
 
 
@@ -69,14 +69,13 @@ def process_packet(packet):
             protocol = 'DNS'
             query = packet[DNS].qd.qname if packet[DNS].qd else None
             return {
-                'src_ip': packet[IP].src,
-                'dst_ip': packet[IP].dst,
-                'protocol': protocol,
-                'dns_query': query,
-                'timestamp': formatted_time,
-                'delta_time': round(delta_time, 6),
-                'ttl': packet[IP].ttl,
-                'packet_size': len(packet)
+                'Source IP': packet[IP].src,
+                'Destination IP': packet[IP].dst,
+                'Protocol': protocol,
+                'Timestamp': formatted_time,
+                'Delta Time': round(delta_time, 6),
+                'TTL': packet[IP].ttl,
+                'Packet Size': len(packet)
             }
         elif Raw in packet:
             protocol = 'Raw'
@@ -85,27 +84,27 @@ def process_packet(packet):
 
         # Return the processed packet data
         return {
-            'src_ip': packet[IP].src,
-            'dst_ip': packet[IP].dst,
-            'protocol': protocol,
-            'timestamp': formatted_time,
-            'delta_time': round(delta_time, 6),
-            'ttl': packet[IP].ttl,
-            'ip_header_length': packet[IP].ihl * 4,
-            'total_length': packet[IP].len,
-            'src_port': src_port,
-            'dst_port': dst_port,
-            'packet_size': len(packet)
+            'Source IP': packet[IP].src,
+            'Destination IP': packet[IP].dst,
+            'Protocol': protocol,
+            'Timestamp': formatted_time,
+            'Delta Time': round(delta_time, 6),
+            'TTL': packet[IP].ttl,
+            'IP Header Length': packet[IP].ihl * 4,
+            'Total Length': packet[IP].len,
+            'Source Port': src_port,
+            'Destination Port': dst_port,
+            'Packet Size': len(packet)
         }
 
     elif ARP in packet:
         return {
-            'src_ip': packet[ARP].psrc,
-            'dst_ip': packet[ARP].pdst,
-            'protocol': 'ARP',
-            'timestamp': formatted_time,
-            'delta_time': round(delta_time, 6),
-            'packet_size': len(packet)
+            'Source IP': packet[ARP].psrc,
+            'Destination IP': packet[ARP].pdst,
+            'Protocol': 'ARP',
+            'Timestamp': formatted_time,
+            'Delta Time': round(delta_time, 6),
+            'Packet Size': len(packet)
         }
 
     return None

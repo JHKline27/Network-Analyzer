@@ -15,27 +15,27 @@ def save_to_csv(data, filename='data/captured_packets.csv'):
                 first_line = f.readline().strip()
                 if not first_line:  # If the first line is empty, write the headers
                     writer.writerow([
-                        'src_ip', 'dst_ip', 'protocol', 'timestamp', 'delta_time',
-                        'ttl', 'ip_header_length', 'total_length', 'src_port', 'dst_port', 'packet_size'
-                    ])
+        'Source IP', 'Destination IP', 'Protocol', 'Timestamp', 'Delta Time',
+        'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
+    ])
         else:
             # If the file doesn't exist, write headers
             writer.writerow([
-                'src_ip', 'dst_ip', 'protocol', 'timestamp', 'delta_time',
-                'ttl', 'ip_header_length', 'total_length', 'src_port', 'dst_port', 'packet_size'
-            ])
+        'Source IP', 'Destination IP', 'Protocol', 'Timestamp', 'Delta Time',
+        'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
+    ])
 
         # Write the data row
         writer.writerow([
-            data.get('src_ip'),
-            data.get('dst_ip'),
-            data.get('protocol'),
-            data.get('timestamp'),
-            data.get('delta_time'),
-            data.get('ttl'),
-            data.get('ip_header_length'),
-            data.get('total_length'),
-            data.get('src_port'),
-            data.get('dst_port'),
-            data.get('packet_size')
+            data.get('Source IP'),
+            data.get('Destination IP'),
+            data.get('Protocol'),
+            data.get('Timestamp'),
+            data.get('Delta Time'),
+            data.get('TTL'),
+            data.get('IP Header Length'),
+            data.get('Total Length'),
+            data.get('Source Port'),
+            data.get('Destination Port'),
+            data.get('Packet Size')
         ])
