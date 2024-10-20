@@ -9,23 +9,22 @@ def save_to_csv(data, filename='data/captured_packets.csv'):
     with open(filename, mode='a', newline='') as file:
         writer = csv.writer(file)
 
-        # Check if the first line (header) is missing and write it if necessary
         if file_exists:
             with open(filename, 'r') as f:
                 first_line = f.readline().strip()
-                if not first_line:  # If the first line is empty, write the headers
+                if not first_line: 
                     writer.writerow([
         'Source IP', 'Destination IP', 'Protocol', 'Timestamp','Precise Timestamp' , 'Delta Time',
         'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
     ])
         else:
-            # If the file doesn't exist, write headers
+           
             writer.writerow([
         'Source IP', 'Destination IP', 'Protocol', 'Timestamp','Precise Timestamp' , 'Delta Time',
         'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
     ])
 
-        # Write the data row
+        
         writer.writerow([
             data.get('Source IP'),
             data.get('Destination IP'),

@@ -7,14 +7,14 @@ import csv
 
 
 last_packet_time = None
-stop_event = threading.Event()  # Event to signal when to stop capturing
+stop_event = threading.Event() 
 
 def capture(interface, stopper, callback=None):
     clear_csv_file()
     print(f"Stop event cleared: {not stop_event.is_set()}")
     try:
         print("Starting packet capture...")
-        # Use the stop_filter to check for the stop event
+       
         sniff(iface=interface, prn=callback, stop_filter=lambda x: stopper.is_set())
     except Exception as e:
         print(f"Error capturing on interface {interface}: {e}")
@@ -26,8 +26,7 @@ def clear_csv_file(filename='data/captured_packets.csv'):
         writer.writerow([
         'Source IP', 'Destination IP', 'Protocol', 'Timestamp','Precise Timestamp' ,'Delta Time',
         'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
-    ])  # Write the header row at the start of the file
-
+    ]) 
 
 
 def packet_summary(packet):
@@ -54,11 +53,11 @@ def process_packet(packet):
         src_port = None
         dst_port = None
 
-        # Determine the protocol and extract additional information
+       
         if TCP in packet:
             src_port = packet[TCP].sport
             dst_port = packet[TCP].dport
-            if dst_port == 443 or src_port == 443:  # Port 443 is typically used for HTTPS
+            if dst_port == 443 or src_port == 443: 
                 protocol = 'HTTPS'
             else:
                 protocol = 'TCP'
@@ -85,7 +84,7 @@ def process_packet(packet):
         else:
             protocol = 'Other'
 
-        # Return the processed packet data
+        
         return {
             'Source IP': packet[IP].src,
             'Destination IP': packet[IP].dst,

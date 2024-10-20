@@ -10,12 +10,8 @@ def setup_ui():
         selected_interface = st.selectbox("Select a network interface:", interfaces)
 
         start_button = st.button("Start Capture")
-        stop_button = st.button("Stop Capture")
+        stop_button = st.button("Stop Capture")        
 
-        # Analytics Section
-        
-
-        # Filtering Options
         should_filter = st.radio("Filter", ("Off", "On"))
         if should_filter == "On":
             st.subheader("Filter Options")
@@ -27,7 +23,6 @@ def setup_ui():
             packet_size= st.number_input("Enter Packet Size", min_value=0, value=0)
             size_comparison = st.selectbox("Select Size Comparison", ["Equal To","Greater Than", "Less Than"])
 
-            # Return the filter parameters
             return selected_interface, start_button, stop_button, {
                 'protocol_options': protocol_options,
                 'source_ip': source_ip,

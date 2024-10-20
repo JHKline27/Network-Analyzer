@@ -1,6 +1,5 @@
 import streamlit as st
 from analyzer.capture import capture, clear_csv_file, packet_summary, stop_event
-from analyzer.store import save_to_csv
 import threading
 import os
 import pandas as pd
