@@ -12,6 +12,7 @@ def flag_suspicious_packets(df, index, ip_counts):
     return flagged
 
 def flag_large_size(df, index):
+    #HIGH_PACKET_SIZE can be adjusted for different flagging logic
     HIGH_PACKET_SIZE = 15000 
     return df['Packet Size'].iloc[index] > HIGH_PACKET_SIZE 
 
