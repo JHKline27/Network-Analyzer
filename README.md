@@ -53,4 +53,3 @@ streamlit run main.py
 *   `analyzer/capture.py`: Handles packet capturing.
 *   `analyzer/filter.py`: Manages filtering of network traffic.
 *   `ui_layout.py`: Defines the layout and design of the Streamlit dashboard.
-*   `tests/`: Contains unit tests for burst detection and flagging logic.
