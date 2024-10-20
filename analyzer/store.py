@@ -15,13 +15,13 @@ def save_to_csv(data, filename='data/captured_packets.csv'):
                 first_line = f.readline().strip()
                 if not first_line:  # If the first line is empty, write the headers
                     writer.writerow([
-        'Source IP', 'Destination IP', 'Protocol', 'Timestamp', 'Delta Time',
+        'Source IP', 'Destination IP', 'Protocol', 'Timestamp','Precise Timestamp' , 'Delta Time',
         'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
     ])
         else:
             # If the file doesn't exist, write headers
             writer.writerow([
-        'Source IP', 'Destination IP', 'Protocol', 'Timestamp', 'Delta Time',
+        'Source IP', 'Destination IP', 'Protocol', 'Timestamp','Precise Timestamp' , 'Delta Time',
         'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
     ])
 
@@ -31,6 +31,7 @@ def save_to_csv(data, filename='data/captured_packets.csv'):
             data.get('Destination IP'),
             data.get('Protocol'),
             data.get('Timestamp'),
+            data.get('Precise Timestamp'),
             data.get('Delta Time'),
             data.get('TTL'),
             data.get('IP Header Length'),

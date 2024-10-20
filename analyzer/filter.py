@@ -41,10 +41,10 @@ def apply_filters(df, filter_params):
     size_comparison = filter_params['size_comparison']  # New parameter for comparison
 
     if size_comparison == "Greater Than":
-        filtered_df = filtered_df[filtered_df["Size"] > packet_size]
+        filtered_df = filtered_df[filtered_df["Packet Size"] > packet_size]
     elif size_comparison == "Less Than":
-        filtered_df = filtered_df[filtered_df["Size"] < packet_size]
+        filtered_df = filtered_df[filtered_df["Packet Size"] < packet_size]
     elif size_comparison == "Equal To":
-        filtered_df = filtered_df[filtered_df["Size"] == packet_size]
+        filtered_df = filtered_df[filtered_df["Packet Size"] == packet_size]
 
     return filtered_df

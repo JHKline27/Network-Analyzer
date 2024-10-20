@@ -4,6 +4,8 @@ import time
 import threading
 import csv
 
+
+
 last_packet_time = None
 stop_event = threading.Event()  # Event to signal when to stop capturing
 
@@ -22,7 +24,7 @@ def clear_csv_file(filename='data/captured_packets.csv'):
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([
-        'Source IP', 'Destination IP', 'Protocol', 'Timestamp', 'Delta Time',
+        'Source IP', 'Destination IP', 'Protocol', 'Timestamp','Precise Timestamp' ,'Delta Time',
         'TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port', 'Packet Size'
     ])  # Write the header row at the start of the file
 
@@ -37,13 +39,14 @@ def packet_summary(packet):
 def process_packet(packet):
     global last_packet_time
     current_time = time.time()
-
+   
     if last_packet_time:
         delta_time = current_time - last_packet_time
     else:
         delta_time = 0
 
     last_packet_time = current_time
+    precise_time = packet.time
     formatted_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(current_time))
 
     if IP in packet:
@@ -88,6 +91,7 @@ def process_packet(packet):
             'Destination IP': packet[IP].dst,
             'Protocol': protocol,
             'Timestamp': formatted_time,
+            'Precise Timestamp': precise_time,
             'Delta Time': round(delta_time, 6),
             'TTL': packet[IP].ttl,
             'IP Header Length': packet[IP].ihl * 4,
