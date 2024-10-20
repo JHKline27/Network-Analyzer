@@ -54,8 +54,3 @@ streamlit run main.py
 *   `analyzer/filter.py`: Manages filtering of network traffic.
 *   `ui_layout.py`: Defines the layout and design of the Streamlit dashboard.
 *   `tests/`: Contains unit tests for burst detection and flagging logic.
-
-
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
