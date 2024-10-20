@@ -1,7 +1,6 @@
 import streamlit as st
 from analyzer.capture import capture, clear_csv_file, packet_summary, stop_event
 from analyzer.store import save_to_csv
-from scapy.all import get_if_list
 import threading
 import os
 import pandas as pd
@@ -16,13 +15,17 @@ from analyzer.visualize import (
 from analyzer.filter import apply_filters
 from analyzer.flag import flag_suspicious_packets
 
+
+
 def capture_packets(interface):
     stop_event.clear()
     clear_csv_file()
     capture(interface=interface, stopper=stop_event, callback=packet_summary)
 
+
+
+
 def display_analytics():
-    # Create tabs for different analytics
     tab1, tab2, tab3, tab4 = st.tabs(["Protocol Distribution", "Packet Size Distribution", "Packet Frequency Over Time", "Top IP Addresses"])
 
     with tab1:
@@ -41,15 +44,15 @@ def display_analytics():
         st.header("Top IP Addresses")
         plot_top_ip_addresses()
 
-def display_packets(captured_packets_placeholder, df):
-    # Create a list to hold suspicious indices
-    suspicious_indices = []
-    ip_counts = {}  # Dictionary to hold counts of packets by IP
 
-    # Ensure the Timestamp column is in datetime format
-    df['Timestamp'] = pd.to_datetime(df['Timestamp'])  # Make sure this column is datetime
+
+def display_packets(captured_packets_placeholder, df):
+    suspicious_indices = []
+    ip_counts = {}  
+
+    df['Timestamp'] = pd.to_datetime(df['Timestamp']) 
     df_display = df.iloc[::-1].copy() 
-    numeric_columns = ['TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port']  # Replace with actual numeric column names
+    numeric_columns = ['TTL', 'IP Header Length', 'Total Length', 'Source Port', 'Destination Port'] 
     for col in numeric_columns:
         if col in df.columns:
             df[col] = df[col].apply(lambda x: f'{x:.0f}')
@@ -58,17 +61,16 @@ def display_packets(captured_packets_placeholder, df):
         if flag_suspicious_packets(df_display, pos_index, ip_counts):
             suspicious_indices.append(df_display.index[pos_index])
 
-    # Create a copy of the DataFrame for display
     df_display = df.copy()
-    df_display['Suspicious'] = df_display.index.isin(suspicious_indices)  # Mark suspicious packets
+    df_display['Suspicious'] = df_display.index.isin(suspicious_indices) 
 
-    # Highlighting function
     def highlight(row):
         return ['background-color: yellow' if row['Suspicious'] else '' for _ in row]
 
-    # Apply styling and display the DataFrame
     styled_df = df_display.style.apply(highlight, axis=1)
     captured_packets_placeholder.dataframe(styled_df)
+
+
 
 def main():
     if "capturing" not in st.session_state:
@@ -95,7 +97,7 @@ def main():
         if os.path.exists(csv_file_path) and os.path.getsize(csv_file_path) > 0:
             try:
                 df = pd.read_csv(csv_file_path)
-                display_packets(captured_packets_placeholder, df.iloc[::-1])  # Display the packets with highlighting
+                display_packets(captured_packets_placeholder, df.iloc[::-1]) 
             except pd.errors.EmptyDataError:
                 captured_packets_placeholder.write("CSV file is empty or corrupt. No columns to parse.")
         else:
@@ -105,21 +107,23 @@ def main():
     if not st.session_state.capturing:
         if os.path.exists(csv_file_path) and os.path.getsize(csv_file_path) > 0:
             df = pd.read_csv(csv_file_path)
-            display_packets(captured_packets_placeholder, df.iloc[::-1])  # Display the packets with highlighting
+            display_packets(captured_packets_placeholder, df.iloc[::-1]) 
 
-    # Apply Filters
+    
     if st.button("Apply Filters"):
-        if filter_params:  # Check if filtering options were set
+        if filter_params:  
             filtered_df = apply_filters(df, filter_params)
-            display_packets(captured_packets_placeholder, filtered_df)  # Show filtered packets with highlighting
+            display_packets(captured_packets_placeholder, filtered_df) 
 
-    # Add a button to toggle analytics visibility
+   
     if st.button("Show/Hide Analytics"):
         st.session_state.show_analytics = not st.session_state.show_analytics
 
-    # Show analytics based on the toggle
+   
     if st.session_state.show_analytics:
         display_analytics()
+
+
 
 if __name__ == "__main__":
     main()

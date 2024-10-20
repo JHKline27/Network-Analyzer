@@ -37,14 +37,27 @@ def apply_filters(df, filter_params):
         print(f"After Destination Port filter ({filter_params['destination_port']}):")
         print(filtered_df)
 
-    packet_size = filter_params['packet_size']
-    size_comparison = filter_params['size_comparison']  # New parameter for comparison
+   
 
-    if size_comparison == "Greater Than":
-        filtered_df = filtered_df[filtered_df["Packet Size"] > packet_size]
-    elif size_comparison == "Less Than":
-        filtered_df = filtered_df[filtered_df["Packet Size"] < packet_size]
-    elif size_comparison == "Equal To":
-        filtered_df = filtered_df[filtered_df["Packet Size"] == packet_size]
+    filtered_df["Packet Size"] = pd.to_numeric(filtered_df["Packet Size"], errors='coerce')
+    filtered_df = filtered_df.dropna(subset=["Packet Size"])
+
+    # Debugging output for packet size comparison
+    packet_size = filter_params['packet_size']
+    size_comparison = filter_params['size_comparison']
+    if packet_size is not None and packet_size > 0 and size_comparison:
+        print(f"Packet size filter: {packet_size}, comparison: {size_comparison}")
+        
+        if size_comparison == "Greater Than":
+            filtered_df = filtered_df[filtered_df["Packet Size"] > packet_size]
+            print(f"After filtering with 'Greater Than {packet_size}':")
+        elif size_comparison == "Less Than":
+            filtered_df = filtered_df[filtered_df["Packet Size"] < packet_size]
+            print(f"After filtering with 'Less Than {packet_size}':")
+        elif size_comparison == "Equal To":
+            filtered_df = filtered_df[filtered_df["Packet Size"] == packet_size]
+            print(f"After filtering with 'Equal To {packet_size}':")
+
+    print(filtered_df)
 
     return filtered_df
